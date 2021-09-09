@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-nginx
+  labels:
+    app: nginx
+    rel: stable
+spec:
+  containers:
+  - name: my-nginx
+    image: nginx:alpine
+    ports:
+    - containerPort: 80
+
+# kubectl create -f nginx.pod.yml --save-config (can apply changes if you have this command)
+# kubectl describe pod [pod-name] (Very helpful if you wanted to dive deeper in your Pods)
+# kubectl apply -f nginx.pod.yml (apply changes to your pods if you --save-config in your kubectl command)
+# kubectl exec [pod-name] -it bash (This would be very helpful if you wanted to debug or edit something in your container)
+# kubectl edit -f nginx.pod.yml (Live editing your yaml file)
+# kubectl delete -f nginx.pod.yml (will delete your pod and your yaml file)
