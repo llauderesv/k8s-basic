@@ -1,3 +1,3 @@
 # k8s
 
-Activities in Pluralsight Kubernetes course.
+Pluralsight Kubernetes course By Dan Wahlin.
