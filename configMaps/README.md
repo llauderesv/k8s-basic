@@ -8,17 +8,22 @@
 ## Run Node server and access ConfigMap Data
 
 Demo of accessing ConfigMap data in Pod container through environment variables and direct settings.
+
 1. Delete any ConfigMaps you added into k8s above via:
-`kubectl delete cm app-settings`
+   `kubectl delete cm app-settings`
 
 2. Build image: docker build -t node-configmap .
 3. Create ConfigMap:
 
-`kubectl create cm app-settings --from-env-file=settings.config`
-4. Create Deployment:
+`kubectl create cm app-settings --from-env-file=settings.config` 4. Create Deployment:
 
 `kubectl apply -f node-deployment.yml`
 
 4. Port forward the Pod:
 
 `kubectl port-forward <pod-name> 9000`
+
+### Working on ConfigMap
+
+Get a ConfigMap
+`kubectl get cm [cm-name] -o yaml`

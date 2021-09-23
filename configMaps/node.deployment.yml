@@ -12,36 +12,50 @@ spec:
         app: node-configmap
     spec:
       containers:
-      - name: node-configmap
-        image: node-configmap
-        imagePullPolicy: IfNotPresent
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 9000
+        - name: node-configmap
+          image: node-configmap
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 9000
 
-        # reference ConfigMap data at appropriate path /etc/config
-        volumeMounts:
-          - name: app-config-vol
-            mountPath: /etc/config
+          # reference ConfigMap data at appropriate path /etc/config
+          volumeMounts:
+            - name: app-config-vol
+              mountPath: /etc/config
 
-        # Map env variable data to a property
-        env:
-          - name: ENEMIES
-            valueFrom:
-              configMapKeyRef:
+          # Map env variable data to a property
+          env:
+            - name: ENEMIES # name is the key that container will use to get the values of env
+              # valueFrom is useful if you wanted to get specific values in configMap
+              # envFrom is useful if you wanted to map all values from configMap and access it thru your containers.
+              valueFrom:
+                configMapKeyRef: # configMapKeyRef will get the value in ConfigMaps
+                  key: enemies # key is what key should kubernetes would get in the configmap
+                  name: app-settings # name is the configMap name wherein should kuberentes should refer.
+            - name: TEST_ENV
+              valueFrom:
+                configMapKeyRef:
+                  key: test.env
+                  name: app-settings
+            - name: PASSWORD_FROM_SECRET
+              valueFrom:
+                # You can also access values using secrets which is a more secured way to store passwords rather than putting it in ConfigMaps.
+                secretKeyRef: # will get the value from Secret
+                  key: password
+                  name: db-passwords
+
+          # Load all ConfigMap keys/values into environment variables (simplified way if you need them all vs. only a few as with "env" above).
+          envFrom:
+            - configMapRef:
                 name: app-settings
-                key: enemies
-        # Load all ConfigMap keys/values into environment variables (simplified way if you need them all vs. only a few as with "env" above).
-        envFrom:
-          - configMapRef:
-              name: app-settings
 
+      # Load ConfigMaps to volumes
+      # If you put ConfigMaps to volumes each key would create files in volumes path that you reference.
       volumes:
         - name: app-config-vol
           configMap:
             name: app-settings
-
-              
