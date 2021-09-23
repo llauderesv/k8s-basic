@@ -1,0 +1,17 @@
+# For more details about the persistent volume in azure you can go to azure documentation.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  azureFile:
+    shareName: <name_from_azure>
+    secretName: <azure-secret>
+    readOnly: false
