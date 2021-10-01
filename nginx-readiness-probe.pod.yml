@@ -7,27 +7,32 @@ metadata:
     rel: stable
 spec:
   containers:
-  - name: my-nginx
-    image: nginx:alpine
-    ports:
-    - containerPort: 80
-    livenessProbe: # By using probe you can determine if your pods in heathy or not by having some condition in livenessProve and readinessProbe.
-      httpGet:
-        path: /index.html
-        port: 80
-      initialDelaySeconds: 15
-      timeoutSeconds: 2
-      periodSeconds: 5
-      failureThreshold: 1
-    readinessProbe:
-      httpGet:
-        path: /index.html
-        port: 80
-      initialDelaySeconds: 15
-      timeoutSeconds: 2
-      periodSeconds: 5
-      failureThreshold: 1
-
+    - name: my-nginx
+      image: nginx:alpine
+      ports:
+        - containerPort: 80
+      livenessProbe: # By using probe you can determine if your pods in heathy or not by having some condition in livenessProve and readinessProbe.
+        httpGet:
+          path: /index.html
+          port: 80
+        initialDelaySeconds: 15
+        timeoutSeconds: 2
+        periodSeconds: 5
+        failureThreshold: 1
+      # A readiness probe monitors when your application becomes available.
+      # If a readiness probe fails, Kubernetes will not send any traffic to the unready pods.
+      readinessProbe:
+        httpGet:
+          path: /index.html
+          port: 80
+        initialDelaySeconds: 15
+        timeoutSeconds: 2
+        periodSeconds: 5
+        failureThreshold: 1
+      resources:
+        limits:
+          memory: "64Mi" #64 MB
+          cpu: "50m"
 # kubectl create -f nginx.pod.yml --save-config (can apply changes if you have this command)
 # kubectl describe pod [pod-name] (Very helpful if you wanted to dive deeper in your Pods)
 # kubectl apply -f nginx.pod.yml (apply changes to your pods if you --save-config in your kubectl command)

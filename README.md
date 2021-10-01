@@ -1,3 +1,3 @@
 # k8s
 
-Pluralsight Kubernetes course By Dan Wahlin.
+Basic Kubernetes commands.

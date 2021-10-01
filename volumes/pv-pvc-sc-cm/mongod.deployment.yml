@@ -9,15 +9,18 @@ metadata:
     app: mongo-env
   name: mongo-env
 data:
-  MONGODB_DBNAME: sampleDB
+  MONGO_INITDB_ROOT_USERNAME: root
+  MONGO_INITDB_ROOT_PASSWORD: admin1234
+  MONGO_INITDB_DATABASE: newTestDB
+  # MONGODB_DBNAME: sampleDB
   #NO - not a good idea to store a password in a ConfigMap (demo only). See the "secrets" folder for another demo of this.
-  MONGODB_USERNAME: webrole
-  MONGODB_PASSWORD: password
-  MONGODB_ROLE: readWrite
+  # MONGODB_USERNAME: webrole
+  # MONGODB_PASSWORD: password
+  # MONGODB_ROLE: readWrite
   #NO - not a good idea to store a password in a ConfigMap (demo only). See the "secrets" folder for another demo of this.
-  MONGODB_ROOT_PASSWORD: password
-  MONGODB_ROOT_ROLE: root
-  MONGODB_ROOT_USERNAME: dbadmin
+  # MONGODB_ROOT_PASSWORD: password
+  # MONGODB_ROOT_ROLE: root
+  # MONGODB_ROOT_USERNAME: dbadmin
 
 ---
 kind: StorageClass
@@ -52,7 +55,7 @@ spec:
     # IMPORTANT NOTE: Persistent Volumes and MongoDB with Kubernetes on Docker Desktop have been known to have issues
     # on Windows and can even be affected by versions of MacOS. Make sure you read through the
     # steps in the readme.md file since you may need to change the following value.
-    path: /Users/llaudvi/private/tmp/data/db
+    path: /Users/llaudvi/private/tmp/data/db2
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -81,6 +84,7 @@ kind: Service
 metadata:
   name: mongo
 spec:
+  type: ClusterIP
   selector:
     app: mongo
   ports:
@@ -110,51 +114,52 @@ spec:
           name: mongo
           ports:
             - containerPort: 27017
-          command:
-            - mongod
-            - "--auth"
+          # command:
+          #   - mongod
+          #   - "--auth"
           resources: {}
           volumeMounts:
             - name: mongo-volume
               mountPath: /data/db
           env:
-            - name: MONGODB_DBNAME # name is the key that container will use to get the values of env
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_INITDB_ROOT_USERNAME
+                  name: mongo-env
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_INITDB_ROOT_PASSWORD
+                  name: mongo-env
+            # name is the key that container will use to get the values of env
+            - name: MONGO_INITDB_DATABASE
               # valueFrom is useful if you wanted to get specific values in configMap
               # envFrom is useful if you wanted to map all values from configMap and access it thru your containers.
-              valueFrom: 
+              valueFrom:
                 configMapKeyRef:
-                  key: MONGODB_DBNAME # key is what key should kubernetes would get in the configmap
+                  key: MONGO_INITDB_DATABASE # key is what key should kubernetes would get in the configmap
                   name: mongo-env # name is the configMap name wherein should kuberentes should refer.
-            - name: MONGODB_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: MONGODB_PASSWORD
-                  name: mongo-env
-            - name: MONGODB_ROLE
-              valueFrom:
-                configMapKeyRef:
-                  key: MONGODB_ROLE
-                  name: mongo-env
-            - name: MONGODB_ROOT_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: MONGODB_ROOT_PASSWORD
-                  name: mongo-env
-            - name: MONGODB_ROOT_ROLE
-              valueFrom:
-                configMapKeyRef:
-                  key: MONGODB_ROOT_ROLE
-                  name: mongo-env
-            - name: MONGODB_ROOT_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  key: MONGODB_ROOT_USERNAME
-                  name: mongo-env
-            - name: MONGODB_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  key: MONGODB_USERNAME
-                  name: mongo-env
+            # - name: MONGODB_PASSWORD
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       key: MONGODB_PASSWORD
+            #       name: mongo-env
+            # - name: MONGODB_ROLE
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       key: MONGODB_ROLE
+            #       name: mongo-env
+            # - name: MONGODB_ROOT_ROLE
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       key: MONGODB_ROOT_ROLE
+            #       name: mongo-env
+            # - name: MONGODB_USERNAME
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       key: MONGODB_USERNAME
+            #       name: mongo-env
       volumes:
         - name: mongo-volume
           persistentVolumeClaim:
