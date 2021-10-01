@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webdeploy
+spec:
+  selector:
+    matchLabels:
+      app: webdeploy
+  template:
+    metadata:
+      labels:
+        app: webdeploy
+    spec:
+      containers:
+        - name: webdeploy
+          image: nginx:1.19.6-alpine
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "50m"
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /healthy.html
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /index.html
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          volumeMounts:
+            - name: html
+              mountPath: /usr/share/nginx/html
+            - name: index
+              mountPath: /tmp/index.html
+              subPath: index.html
+            - name: healthy
+              mountPath: /tmp/healthy.html
+              subPath: healthy.html
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "cp /tmp/index.html /usr/share/nginx/html/index.html; cp /tmp/healthy.html /usr/share/nginx/html/healthy.html; nginx; sleep inf",
+            ]
+      volumes:
+        - name: index
+          configMap:
+            name: server1
+        - name: healthy
+          configMap:
+            name: healthy
+        - name: html
+          emptyDir: {}
