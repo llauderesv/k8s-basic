@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-myapp
+  namespace: demo-ingress
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: demo-myapp
+  template:
+    metadata:
+      labels:
+        app: demo-myapp
+    spec:
+      containers:
+        - name: demo-myapp
+          image: nginx:alpine
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
