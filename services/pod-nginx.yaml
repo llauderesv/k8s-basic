@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  # labels is very useful as an identifier to your service that are
+  # going to be targeted.
+  labels:
+    app: myapp
+    type: front-end
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+      resources: {}
