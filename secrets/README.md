@@ -27,17 +27,17 @@ a secret is an object that contains a small amount of sensitive data such as a p
 
 # Creating a Secret
 
-Create a secret and store securely in Kubernetes
+### Create a secret and store securely in Kubernetes
 
 `kubectl create secret generic my-secret --from-file-literal=pwd=my-password`
 
-Create a secret from a file
+###Create a secret from a file
 
 `kubectl create secret generic my-secret 
   --from-file=ssh-privatekey=~/.ssh/id_rsa \ 
   --from-file=ssh-publickey=~/.ssh/id_rsa.pub`
 
-Create a secret from a key pair
+### Create a secret from a key pair
 
 kubectl create secret tls tls-secret --cert=path/to/tls.cert \
   --key=path/to/tls.key
