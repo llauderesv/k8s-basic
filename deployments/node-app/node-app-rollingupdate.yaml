@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-app
+spec:
+  replicas: 3
+  # It's a best practice to limit the rollout history changes specially if you're doing everyday deployment.
+  revisionHistoryLimit: 10
+  minReadySeconds: 30
+  # Strategy is a deployment model used in kubernetes to deploy your application without having a zero downtime.
+  # Max Surge is used when you want to increase your pods to their limit by adding a new version of your new image
+  # once the pod is ready and the replica set is changed, it will update now the old replica set to match the desired state
+  # and it will repeat the process until we update all the pods using the new version.
+
+  # Same with maxUnavailable first it will scaledown the replica set base on the value that you provide in maxUnavailable
+  # then it will add a new version of pod to match the desired state of the replica set.
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: node-app
+  template:
+    metadata:
+      annotations:
+        kubernetes.io/change-cause: "upgrade image to node-app:v4"
+      labels:
+        app: node-app
+    spec:
+      containers:
+        - name: node-app
+          image: node-app:v4
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "10m"
+          ports:
+            - containerPort: 8080
