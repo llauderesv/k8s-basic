@@ -1,3 +1,3 @@
 # k8s
 
-Basic Kubernetes commands.
+My learning journey in Kubernetes and gist of the code that I used.
