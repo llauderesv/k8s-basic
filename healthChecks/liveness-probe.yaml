@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kuard
+spec:
+  containers:
+    - name: kuard
+      image: gcr.io/kuard-demo/kuard-amd64:blue
+      livenessProbe:
+        httpGet:
+          path: /health # Will check in the pod if the container is already running
+          port: 8080
+        initialDelaySeconds: 5 # will put a delay before performing request to a path.
+        timeoutSeconds: 5 # Kubernetes will fail the Pods if it doesn't respond within
+        periodSeconds: 10 # Kubernetes will call the probe every 10 seconds
+        # Kubernetes will fail the pod and restart if we encounter 3 consecutive fail.
+        failureThreshold: 3
+        # The probe must respond within the 1-second time‐ out, and the HTTP status code must be equal to or greater than 200 and less than 400 to be considered successful
+      resources: {}
+
