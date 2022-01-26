@@ -1,5 +1,14 @@
 # k8s Ingress demo
 
+Note:
+
+Make sure you run this kubectl command to install nginx-ingress-controller in your local Kubernetes cluster (docker-desktop).
+
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.1/deploy/static/provider/cloud/deploy.yaml
+```
+
+
 ## Ingress
 
 Ingress is not a type of service. Instead, it sits in front of multiple services and act as a smart router or entrypoint into your cluster.
