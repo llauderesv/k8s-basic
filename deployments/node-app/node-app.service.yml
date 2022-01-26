@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: node-app
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: node-app # used to select all pods with the same name select node-app
   ports:
-  - port: 3001
+  - port: 80
     targetPort: 8080

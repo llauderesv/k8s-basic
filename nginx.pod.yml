@@ -7,10 +7,33 @@ metadata:
     rel: stable
 spec:
   containers:
-  - name: my-nginx
-    image: nginx:alpine
-    ports:
-    - containerPort: 80
+    - name: my-nginx
+      image: nginx
+      ports:
+        - containerPort: 80
+      resources: {}
+      volumeMounts:
+        - name: server
+          mountPath: /usr/share/nginx/html
+          # subPath: index.html
+          # readOnly: true
+    - name: html-logger
+      image: alpine
+      resources: {}
+      command: ["/bin/sh", "-c"]
+      args:
+        # - while true; do date >> /html/index.html;sleep 3; done
+        - while true; do cat /html/index.html; sleep 10s; done
+      volumeMounts:
+        - name: server
+          mountPath: /html
+          readOnly: true
+  volumes:
+    - name: html
+      emptyDir: {}
+    - name: server
+      configMap:
+        name: server
 
 # kubectl create -f nginx.pod.yml --save-config (can apply changes if you have this command)
 # kubectl describe pod [pod-name] (Very helpful if you wanted to dive deeper in your Pods)
