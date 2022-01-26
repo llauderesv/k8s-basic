@@ -4,8 +4,8 @@ metadata:
   name: nodeport-service
 spec:
   selector:
-    app: pod-server1-deployment
+    app: pod-server1
   type: NodePort
   ports:
     - targetPort: 80 # the target port that connects to pod
-      port: 80
+      port: 8080

@@ -4,8 +4,8 @@ metadata:
   name: loadbalancer-service
 spec:
   selector:
-    app: pod-server1-deployment
+    app: pod-server1
   type: LoadBalancer
   ports:
-    - port: 80
+    - port: 8080
       targetPort: 80
