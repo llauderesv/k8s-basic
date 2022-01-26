@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kuard
+spec:
+  volumes:
+    - name: kuard-data
+      hostPath:
+        path: /var/lib/kuard # will locate to /var/lib/kuard where data gets in.
+    - name: varlog
+      hostPath:
+        path: /var/lib/log
+  containers:
+    - name: kuard
+      image: gcr.io/kuar-demo/kuard-amd64:blue
+      volumeMounts:
+        - mountPath: /data # will mount to container /data folder.
+          name: kuard-data
+      ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+      resources:
+        limits:
+          cpu: "500m"
+          memory: "64Mi"
+    - name: count
+      image: busybox
+      command: ["/bin/sh", "-c"]
+      args:
+        - >
+          i=0;
+          while true;
+          do
+            echo "$i: $(date)" >> /var/log/1.log;
+            echo "$(date) INFO $i" >> /var/log/2.log;
+            i=$((i+1));
+            sleep 1;
+          done
+      volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+      resources:
+        limits:
+          cpu: "500m"
+          memory: "64Mi"
