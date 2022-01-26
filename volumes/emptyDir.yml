@@ -9,9 +9,8 @@ spec:
     - name: nginx-alpine-volume
       image: nginx:alpine
       volumeMounts:
-        - name: html2
+        - name: html
           mountPath: /usr/share/nginx/html
-          readOnly: true
       resources:
         limits:
           memory: "128Mi"
@@ -20,18 +19,20 @@ spec:
         - containerPort: 80
     - name: html-updater
       image: alpine
+      # Command is the an entrypoint in docker where in you can't override the executable that you wrote here
       command: ["/bin/sh", "-c"]
+      # Args is the equivalent of CMD in docker where in you can override the the values 
+      # if you execute it using CLI
       args:
-        # - while true; do date >> /html/index.html;sleep 3; done
         - while true; do cat /html/index.html; sleep 10s; done
       resources:
         limits:
           memory: "128Mi"
           cpu: "500m"
       volumeMounts:
-        - name: html2
+        - name: html
           mountPath: /html
           readOnly: true
   volumes:
-    - name: html2
-      emptyDir: {}
+    - name: html
+      emptyDir: {} # shared storage for containers inside this pod...
