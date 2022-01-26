@@ -1,18 +1,23 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: demo-myapp-ingress
+  name: demo-myapp
   annotations:
+    # use the shared ingress-nginx
     kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  tls:
+    - hosts:
+        - demo-myapp.example.com
+      secretName: tls-secret
   rules:
-    - http:
+    - host: demo-myapp.example.com
+      http:
         paths:
-          - path: /nginx
-            pathType: Prefix
+          - path: /
             backend:
-              service:
-                name: my-clusterip-service
-                port:
-                  number: 8080
+              # This service is expose as cluster ip and can't able to access outside
+              # the cluster. Only ingress controller can access this service
+              serviceName: myapp-service
+              servicePort: 8081
