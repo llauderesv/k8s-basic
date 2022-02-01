@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-pre-stop-hook
+spec:
+  containers:
+    - image: llauderesv/kubia
+      name: kubia
+      lifecycle:
+        preStop:
+          # This is a pre-stop hook that
+          # performs an HTTP GET request.
+          httpGet:
+            # The request is sent to https://POD_ID:8080/shutdown
+            port: 8080
+            path: shutdown

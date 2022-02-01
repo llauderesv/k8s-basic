@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-with-post-start-hook
+spec:
+  containers:
+    - image: llauderesv/kubia
+      name: kubia
+      lifecycle:
+        # The hooks is executed as the container starts.
+        # It executes the postStart.sh script in the /bin directory inside the container.
+        postStart:
+          exec:
+            command:
+              - sh
+              - -c 
+              - "echo 'hook will fail with exit code 15'; sleep 5; exit 15"
